@@ -1,0 +1,10 @@
+<h1><%=@meet.title%></h1>
+
+  <%@all_users.each do |single|%>
+  <li>
+    <%=single.user_id.avatar_url%>
+    <%=single.user_id.username%>
+  </li>
+  <%end%>
+
+

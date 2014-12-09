@@ -44,6 +44,8 @@ get '/meetups/create' do
 end
 
 
+
+
 get '/auth/github/callback' do
   auth = env['omniauth.auth']
 
@@ -70,18 +72,15 @@ post '/meetups' do
   @title = params["title"]
   @location = params["location"]
   @topic = params["topic"]
+  @meetup = Meetup.new(title:"#{@title}",location:"#{@location}",topic:"#{@topic}")
 
-  # if !@title.empty? && !@location.empty? && !@topic.empty
-  @meetup = Meetup.create(title:"#{@title}",topic:"#{@topic}",location:"#{@location}")
   @meetup.save
   @all_meets = Meetup.all
-  # else
-  #   @error_messages = []
-  #   @error_messages << "You must enter a title." if @title.empty?
-  #   @error_messages << "You must enter a topic." if @topic.empty?
-  #   @error_messages << "You must enter a location." if @location.empty?
 
-    erb :'meetups/index'
-  # end
+  notice_array = ""
+  if !@meetup.save
+    flash[:notice] = @meetup.errors.full_messages.join(' ')
+  end
+    redirect '/meetups'
 
 end

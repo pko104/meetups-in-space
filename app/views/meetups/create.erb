@@ -1,12 +1,5 @@
 <h3>Post your Meet Up</h3>
 
-<% if @error_messages %>
-  <ul class="error">
-    <% @error_messages.each do |msg| %>
-      <li><%= msg %></li>
-    <% end %>
-  </ul>
-<% end %>
 <%authenticate!%>
 <div>
   <form method="post" action="/meetups">
