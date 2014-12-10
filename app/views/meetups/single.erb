@@ -1,10 +1,63 @@
 <h1><%=@meet.title%></h1>
-
-  <%@all_users.each do |single|%>
+<h2><%=@meet.topic%></h2>
+<body>
+<%authenticate!%>
+  <%@meet.users.each do |user|%>
+    <img src= "<%=user.avatar_url%>" alt="Photo" style="width:150px;height:150px">
   <li>
-    <%=single.user_id.avatar_url%>
-    <%=single.user_id.username%>
+    <%=user.username%>
   </li>
   <%end%>
 
+  <%if @listed%>
+    <div>
+      <form method="post" action="/meetups/<%=@meet.id%>">
+        <div>
+          <input type="submit" style="color:#000;" value="Leave Meet Up" name="meetup_destroy">
+        </div>
+      </form>
+    </div>
+  <%else%>
+    <div>
+        <form method="post" action="/meetups/<%=@meet.id%>">
+      <div>
+          <input type="submit" style="color:#000;" value="Join Meet Up" name="meetup_id">
+      </div>
+        </form>
+    </div>
+  <%end%>
 
+<br>
+  <%="Message Board"%>
+</br>
+<br>
+<%if @message_board != nil%>
+  <%@message_board.each do |msg|%>
+  <li>
+  <%="#{msg.rsvp.user.username} :"%>
+  <%=msg.message%>
+  <%="-----" + "#{msg.created_at}"%>
+  </li>
+  <%end%>
+  <%end%>
+
+<br>
+</br>
+
+<%if @listed%>
+<div>
+  <form method="post" action="/meetups/<%=@meet.id%>">
+    <div>
+      <label for="Message"</label>
+      <input type="text" style="color:#000;" id="message" placeholder="Message" name="message">
+    </div>
+    <div>
+      <input type="submit" style="color:#000;" value="Post Message">
+    </div>
+  </form>
+</div>
+<%end%>
+
+
+
+</body>
