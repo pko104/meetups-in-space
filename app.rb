@@ -49,13 +49,13 @@ end
 get '/meetups/:id' do
   @meet = Meetup.find_by(id: params[:id])
   @rsvp = Rsvp.find_by(meetup_id: params[:id])
-  #binding.pry
+
   if @rsvp != nil
-  @message_board = Post.where(rsvp_id: @rsvp.id)
+    @message_board = Post.where(rsvp_id: @rsvp.id)
   end
+
   @listed = Rsvp.find_by(user_id: current_user, meetup_id: params[:id])
-  #binding.pry
-   erb :'meetups/single'
+  erb :'meetups/single'
 end
 
 
@@ -71,7 +71,6 @@ end
 get '/sign_out' do
   session[:user_id] = nil
   flash[:notice] = "You have been signed out."
-
   redirect '/'
 end
 
@@ -80,28 +79,34 @@ get '/example_protected_page' do
 end
 
 
-
-
 post '/meetups/:id' do
   @message = params["message"]
   @meetup_destroy = params["meetup_destroy"]
-  if @meetup_destroy !=nil
+  @meetup_delete = params["meetup_delete"]
   @destroyer = Rsvp.find_by(user_id: current_user.id, meetup_id: params[:id])
-  @destroyer.destroy
+
+  if @meetup_destroy !=nil
+    @destroyer.destroy
+    flash[:notice] = "You have left a meet up!"
+  elsif @meetup_delete !=nil
+    @meetup = Meetup.find_by(id: @destroyer.meetup_id)
+    @meetup.destroy
+    flash[:notice] = "You have deleted a meet up!"
+    redirect "/meetups"
   else
-  @attendee = Rsvp.create(user_id: current_user.id, meetup_id: params[:id])
+    @attendee = Rsvp.create(user_id: current_user.id, meetup_id: params[:id])
+    flash[:notice] = "You have joined a meet up!"
   end
+
   if @message !=nil
-  @rsvp = Rsvp.find_by(meetup_id: params[:id])
-  @newmsg = Post.create(message: @message, rsvp_id: @rsvp.id)
+    @rsvp = Rsvp.find_by(meetup_id: params[:id])
+    @newmsg = Post.create(message: @message, rsvp_id: @rsvp.id)
   end
-  #binding.pry
   redirect "/meetups/#{params[:id]}"
 end
 
 post '/meetups' do
 
-  @meetup_id = params["meetup_id"]
   @title = params["title"]
   @location = params["location"]
   @topic = params["topic"]
@@ -110,7 +115,10 @@ post '/meetups' do
   @all_meets = Meetup.all
   if !@meetup.save
     flash[:notice] = @meetup.errors.full_messages.join(' ')
+  else
+    flash[:notice] = "You have created a meet up!"
   end
-    redirect '/meetups'
-
+    redirect "/meetups/#{@meetup.id}"
 end
+
+

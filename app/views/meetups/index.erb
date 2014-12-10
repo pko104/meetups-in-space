@@ -1,19 +1,26 @@
 <h1><%"ALL THE MEET UPS!"%></h1>
+
 <a href="/meetups/create"><%="Create Meet Up"%></a>
+
 <%authenticate!%>
+
   <%if @all_meets.class != nil%>
     <%@all_meets.each do |meet|%>
+
   <ul>
         <a href="/meetups/<%=meet.id%>"><%=meet.title%></a>
-        <li><%=meet.topic%></li>
+        <li><%="Topic: #{meet.topic}"%></li>
+        <li><%="Location: #{meet.location}"%></li>
   </ul>
+
     <div>
         <form method="post" action="/meetups/<%=meet.id%>">
       <div>
-        <input type="submit" style="color:#000;" value="Join Meet Up" name="meetup_id">
+          <input type="submit" style="color:#000;" value="Join Meet Up" name="meetup_id">
       </div>
-      </form>
+        </form>
     </div>
+
       <%end%>
   <%end%>
 

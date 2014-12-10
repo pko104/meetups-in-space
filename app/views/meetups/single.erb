@@ -57,7 +57,18 @@
   </form>
 </div>
 <%end%>
+<br>
+</br>
 
+<%if @listed%>
+  <div>
+      <form method="post" action="/meetups/<%=@meet.id%>">
+    <div>
+        <input type="submit" style="color:#000;" value="Delete Meet Up" name="meetup_delete">
+    </div>
+      </form>
+  </div>
+<%end%>
 
 
 </body>
